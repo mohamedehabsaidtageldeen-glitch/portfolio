@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة التحكم</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f4f6;--pan:#fff;--ln:#e5e7eb;--tx:#111827;--mu:#6b7280;--ac:#2f5bff;--red:#dc2626}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'Plus Jakarta Sans','IBM Plex Sans Arabic',sans-serif;font-size:15px;line-height:1.7}
+a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer;color:inherit}img{display:block}
+#app{display:grid;grid-template-columns:230px 1fr;height:100vh}
+#side{background:var(--pan);border-left:1px solid var(--ln);padding:22px 14px;overflow-y:auto}
+.brand{font-weight:800;font-size:19px;padding:0 10px;margin-bottom:20px}
+.brand small{display:block;color:var(--mu);font-size:12px;font-weight:500}
+#nv button{display:block;width:100%;text-align:right;background:none;border:0;padding:10px 12px;border-radius:10px;font-weight:500;color:#374151;font-size:14.5px;margin-bottom:2px}
+#nv button:hover{background:var(--bg)}
+#nv button.on{background:#eef2ff;color:var(--ac);font-weight:600}
+#wrap{display:flex;flex-direction:column;min-width:0;height:100vh}
+#top{display:flex;gap:10px;align-items:center;padding:12px 22px;background:var(--pan);border-bottom:1px solid var(--ln);flex-wrap:wrap}
+#st{flex:1;font-size:13.5px;color:var(--mu);min-width:200px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:6px}
+.dot.on{background:#16a34a}.dot.off{background:var(--red)}
+#body{display:flex;flex:1;min-height:0}
+#main{flex:1;overflow-y:auto;padding:28px 26px 100px;min-width:0}
+#prev{display:none;width:46%;min-width:340px;border-right:1px solid var(--ln);background:#e5e7eb;flex-direction:column}
+body.pv #prev{display:flex}
+.pvh{display:flex;gap:6px;padding:10px;background:var(--pan);border-bottom:1px solid var(--ln)}
+.pvf{flex:1;overflow:auto;display:flex;justify-content:center;padding:0}
+.pvf iframe{width:100%;height:100%;border:0;background:#fff}
+.pvf.m{padding:14px}.pvf.m iframe{width:390px;height:100%;max-width:100%;border-radius:18px;border:6px solid #111}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.bar h2{font-size:26px;font-weight:700}
+.bar small{color:var(--mu);font-weight:500}
+.b{display:inline-block;background:var(--pan);border:1px solid #d1d5db;border-radius:10px;padding:8px 16px;font-weight:600;font-size:13.5px;transition:.15s}
+.b:hover{border-color:var(--ac);color:var(--ac)}
+.b.p{background:var(--ac);color:#fff;border-color:var(--ac)}.b.p:hover{filter:brightness(1.1);color:#fff}
+.b.r{color:var(--red)}.b.r:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.b.s{padding:4px 10px;font-size:12.5px;border-radius:8px}
+.note{background:#fffbeb;border:1px solid #fcd34d;padding:11px 16px;border-radius:10px;margin-bottom:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px}
+.card{background:var(--pan);border:1px solid var(--ln);border-radius:14px;padding:20px;margin-bottom:16px;max-width:860px}
+.card>h3{font-size:17px;font-weight:700;margin-bottom:4px}
+.card>.sub{color:var(--mu);font-size:13.5px;margin-bottom:16px}
+label.f,div.f{display:block;font-weight:600;font-size:13.5px;margin-bottom:14px}
+label.f small{display:block;color:var(--mu);font-weight:400;font-size:12.5px}
+input[type=text],input[type=email],input[type=number],select,textarea{width:100%;margin-top:6px;border:1px solid #d1d5db;border-radius:10px;padding:9px 12px;font-family:inherit;font-size:14.5px;background:#fff;outline:0;color:var(--tx)}
+input:focus,select:focus,textarea:focus{border-color:var(--ac);box-shadow:0 0 0 3px #2f5bff22}
+textarea{resize:vertical;min-height:80px}
+.ck{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;margin-bottom:12px;cursor:pointer}
+.ck input{width:18px;height:18px;accent-color:var(--ac)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.cr2{display:flex;gap:10px;align-items:center;margin-top:6px}
+.cr2 input[type=color]{width:54px;height:38px;border:1px solid #d1d5db;border-radius:8px;padding:2px;background:#fff}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.seg button{border:1px solid #d1d5db;background:#fff;border-radius:10px;padding:7px 16px;font-size:13.5px;font-weight:500}
+.seg button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:8px}
+.themes button{border:2px solid var(--ln);border-radius:12px;padding:10px;background:var(--b);text-align:center;font-weight:600;font-size:13px}
+.themes button i{display:block;width:26px;height:26px;border-radius:50%;background:var(--c);margin:0 auto 6px}
+.themes button.on{border-color:var(--ac);box-shadow:0 0 0 3px #2f5bff30}
+.li{border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:12px;background:#fafafa}
+.lih{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.lih b{color:var(--mu)}
+.rw{display:grid;grid-template-columns:1.1fr 1.2fr auto;gap:10px;align-items:center}
+.rw input[type=text]{margin:0}.rw .ck{margin:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;max-width:860px}
+.stat{background:var(--pan);border:1px solid var(--ln);border-radius:14px;padding:16px}
+.stat b{display:block;font-size:28px;line-height:1.2}.stat span{color:var(--mu);font-size:13px}
+.prog{height:8px;background:var(--ln);border-radius:9px;overflow:hidden;margin:10px 0 16px}.prog i{display:block;height:100%;background:var(--ac)}
+.chk{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--ln);font-size:14px}
+.chk::before{content:"○";color:#9ca3af}.chk.ok::before{content:"✓";color:#16a34a;font-weight:800}.chk.ok{color:var(--mu)}
+.quick{display:block;border:2px dashed #cbd5e1;border-radius:14px;padding:20px;text-align:center;color:var(--mu);margin-bottom:16px;cursor:pointer;background:#fff;transition:.2s}
+.quick.over,.quick:hover{border-color:var(--ac);color:var(--ac)}
+.tools{display:flex;gap:10px;margin-bottom:16px;max-width:520px}.tools input,.tools select{margin:0}
+.wl{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.wc{background:var(--pan);border:1px solid var(--ln);border-radius:14px;overflow:hidden}
+.wc.off{opacity:.5}
+.wc>img{width:100%;height:150px;object-fit:cover;background:#eee}
+.wi{padding:12px}.wi small{display:block;color:var(--mu);font-size:12.5px}
+.row{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.imgsel{display:flex;gap:14px;align-items:center}.imgsel img{width:84px;height:84px;object-fit:cover;border-radius:10px;background:#eee;border:1px solid var(--ln)}
+#ed{position:fixed;inset:0;background:#0009;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:26px 12px}
+#ed .box{background:var(--bg);border-radius:18px;width:min(860px,100%);padding:24px}
+.dz{border:2px dashed #cbd5e1;border-radius:14px;padding:26px;text-align:center;color:var(--mu);cursor:pointer;background:#fff}
+.dz.over{border-color:var(--ac);color:var(--ac)}.dz b{color:var(--tx)}
+.th{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+.th>div{position:relative;background:#fff;border:1px solid var(--ln);border-radius:12px;overflow:hidden}
+.th img{width:100%;height:110px;object-fit:cover}
+.th .tb{display:flex;gap:3px;padding:5px}.th .tb button{flex:1;border:1px solid #d1d5db;background:#fff;border-radius:6px;font-size:11.5px;padding:2px}
+.th .cv{position:absolute;top:6px;right:6px;background:var(--ac);color:#fff;font-size:11px;padding:1px 8px;border-radius:99px}
+#toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,90px);background:#111827;color:#fff;padding:10px 22px;border-radius:99px;font-weight:500;z-index:300;transition:transform .4s;font-size:14px}
+#toast.show{transform:translate(-50%,0)}
+.mu{color:var(--mu)}
+@media(max-width:900px){#app{grid-template-columns:1fr;grid-template-rows:auto 1fr}#side{display:flex;overflow-x:auto;padding:8px;border:0}.brand{display:none}#nv{display:flex}#nv button{white-space:nowrap;width:auto}#prev{position:fixed;inset:60px 0 0 0;width:auto;z-index:50}.two,.rw{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app">
+ <aside id="side"><div class="brand">لوحة التحكم<small>Portfolio Dashboard</small></div><nav id="nv"></nav></aside>
+ <div id="wrap">
+  <div id="top"><div id="st"></div><button class="b" id="pvt">معاينة مباشرة</button><button class="b p" id="conn">ربط فولدر الموقع</button><a class="b" href="index.html" target="_blank">فتح الموقع ↗</a></div>
+  <div id="body">
+   <div id="main"></div>
+   <div id="prev"><div class="pvh"><button class="b s" data-dv="d">كمبيوتر</button><button class="b s" data-dv="m">موبايل</button></div><div class="pvf" id="pvf"><iframe id="pf" title="preview"></iframe></div></div>
+  </div>
+ </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const $=(s,p=document)=>p.querySelector(s),$$=(s,p=document)=>[...p.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2300)}
+
+const DB={
+ open(){return new Promise((res,rej)=>{const r=indexedDB.open('pf_admin_v3',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})},
+ async get(k){try{const db=await this.open();return await new Promise(res=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>res(null)})}catch(e){return null}},
+ async set(k,v){try{const db=await this.open();return await new Promise(res=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>res(true);t.onerror=()=>res(false)})}catch(e){return false}}
+};
+
+/* ---------- defaults ---------- */
+const SECS=['hero','clients','works','services','process','about','pricing','testimonials','faq','contact'];
+const SN={hero:'الصفحة الأولى',clients:'العملاء',works:'الأعمال',services:'الخدمات',process:'طريقة الشغل',about:'عني والمهارات',pricing:'الباقات والأسعار',testimonials:'آراء العملاء',faq:'الأسئلة الشائعة',contact:'التواصل'};
+const THEMES={clean:['Clean','#2f5bff','#f6f6f4'],sand:['Sand','#c2410c','#f6f0e7'],forest:['Forest','#16803c','#f1f5f1'],rose:['Rose','#e11d48','#faf4f5'],ocean:['Ocean','#0284c7','#f1f6f9'],mono:['Mono','#111111','#ffffff'],gold:['Gold','#b8892b','#f8f5ee']};
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const PAL=[['#e9e4da','#1f2937','#2f5bff'],['#1f2937','#e9e4da','#f59e0b'],['#dbeafe','#1e3a8a','#fb7185'],['#fde68a','#111827','#ffffff'],['#d1fae5','#064e3b','#f97316'],['#fce7f3','#831843','#111827']];
+function gen(seed,w,h,label){
+ const R=rng(seed*977+13),p=PAL[seed%PAL.length],c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+ x.fillStyle=p[0];x.fillRect(0,0,w,h);x.fillStyle=p[1];x.beginPath();x.arc(w*(.3+R()*.4),h*(.32+R()*.3),w*(.2+R()*.14),0,7);x.fill();
+ x.fillStyle=p[2];x.fillRect(w*.08,h*(.6+R()*.15),w*(.3+R()*.35),h*.05);x.beginPath();x.arc(w*(.7+R()*.15),h*(.15+R()*.1),w*.06,0,7);x.fill();
+ x.fillStyle=p[1];x.font='800 '+Math.round(w*.1)+'px sans-serif';x.fillText(label,w*.08,h*.92);
+ return{id:'i_'+uid(),d:c.toDataURL('image/jpeg',.88),s:false}}
+function defD(){
+ const sp=[['posters','بوستر افتتاح مطعم',[800,1000]],['brand','هوية براند ملابس',[800,800]],['social','حملة عرض الجمعة',[800,1100]],['web','موقع شخصي',[800,600]]];
+ return{updatedAt:0,
+ settings:{lang:'ar',theme:'clean',mode:'light',accent:'',font:'plex',radius:'soft',layout:'masonry',hero:'split',anim:true,toggle:true,whatsapp:'',waFloat:true,email:'your@email.com',cv:'',seoTitle:'',seoDesc:'',available:true,availText:'',cta:'',sections:SECS.map(id=>({id,on:true,title:''}))},
+ profile:{name:'Muhammed Alemdaroğlu',title:'مصمم جرافيك ومطوّر ويب',tagline:'بصمم هويات وبوسترات وبعمل مواقع تخلي مشروعك يبان أحسن ويبيع أكتر.',location:'مصر',heroImg:null,aboutImg:null,
+  about:'أنا محمد، مصمم جرافيك بشتغل مع عملاء حقيقيين على بوسترات السوشيال ميديا والهويات البصرية، وبطوّر مواقع وأدوات بنفسي. بهتم بالتفاصيل وبالتسليم في ميعاده.\nاكتب هنا نبذة عنك بكلامك.',
+  skills:[{n:'Graphic Design',v:90},{n:'Branding',v:75},{n:'Web Development',v:55},{n:'AI Tools',v:85}],stats:[{n:'50+',l:'مشروع'},{n:'15+',l:'عميل'},{n:'3+',l:'سنين خبرة'}]},
+ cats:[{id:'posters',name:'بوسترات'},{id:'brand',name:'هوية بصرية'},{id:'social',name:'سوشيال ميديا'},{id:'web',name:'ويب'}],
+ works:sp.map(([c,t,[w,h]],i)=>({id:uid(),title:t,cat:c,year:'2026',client:'عميل تجريبي',desc:'ده عمل تجريبي. امسحه وارفع شغلك الحقيقي.',tags:['Design'],link:'',featured:i===0,ba:false,hidden:false,demo:true,imgs:[gen(i,w,h,'0'+(i+1)),gen(i+3,w,h,'DEMO')]})),
+ services:[{t:'بوسترات سوشيال ميديا',d:'تصميمات تلفت الانتباه وتزوّد التفاعل والمبيعات.'},{t:'هوية بصرية',d:'لوجو وألوان وخطوط تخلي براندك مميز ومتّسق.'},{t:'تصميم مواقع',d:'مواقع سريعة وأنيقة بتشتغل على كل الشاشات.'},{t:'محتوى بالذكاء الاصطناعي',d:'صور وإعلانات بتتعمل بأدوات AI بجودة احترافية.'}],
+ process:[{t:'نتكلم',d:'بفهم احتياجك وهدفك وجمهورك.'},{t:'أصمم',d:'بقدملك أول تصور واضح خلال أيام.'},{t:'نعدّل',d:'بنظبط التفاصيل لحد ما تبقى راضي.'},{t:'أسلّم',d:'بتستلم كل الملفات جاهزة للاستخدام.'}],
+ packages:[{name:'Basic',price:'500 ج',desc:'للبدايات السريعة',features:['تصميم واحد','تعديلين','تسليم خلال 48 ساعة'],pop:false},{name:'Pro',price:'1,800 ج',desc:'الأنسب للبراندات الصغيرة',features:['5 تصميمات','هوية مبسطة','3 تعديلات','ملفات مفتوحة'],pop:true},{name:'Brand',price:'4,500 ج',desc:'هوية كاملة لمشروعك',features:['لوجو + ألوان + خطوط','دليل استخدام','10 تصميمات سوشيال','دعم أسبوعين'],pop:false}],
+ testimonials:[{name:'اسم العميل',role:'صاحب مشروع',text:'شغل مرتب وسريع، والنتيجة فاقت توقعاتي. اكتب رأي عميل حقيقي هنا.'},{name:'اسم العميل',role:'مدير تسويق',text:'تعامل راقي وتسليم في الميعاد، وهرجعله في أي مشروع جاي.'}],
+ faq:[{q:'بتاخد وقت قد إيه في التصميم؟',a:'بيختلف حسب المشروع، غالبًا من يومين لأسبوع.'},{q:'ينفع أطلب تعديلات؟',a:'أكيد، وعدد التعديلات حسب الباقة.'},{q:'بتشتغل مع عملاء برا مصر؟',a:'أيوه، وبتواصل بالواتساب أو الإيميل.'}],
+ clients:['Brand One','Studio Two','Café Three','Shop Four','Agency Five'],
+ socials:[{l:'Instagram',u:'#'},{l:'Facebook',u:'#'},{l:'Behance',u:'#'}]}}
+function fix(d){const f=defD();d.settings=Object.assign(f.settings,d.settings||{});const h=d.settings.sections.map(s=>s.id);SECS.forEach(id=>{if(!h.includes(id))d.settings.sections.push({id,on:true,title:''})});d.profile=Object.assign(f.profile,d.profile||{});
+ ['cats','works','services','process','packages','testimonials','faq','clients','socials'].forEach(k=>{if(!Array.isArray(d[k]))d[k]=f[k]});return d}
+
+let D,dirH=null,perm=false,TAB='home',T=null,lastSync='';
+const catName=id=>(D.cats.find(c=>c.id===id)||{name:'—'}).name;
+const allImgs=()=>[D.profile.heroImg,D.profile.aboutImg,...D.works.flatMap(w=>w.imgs)].filter(Boolean);
+const gp=p=>p.split('.').reduce((o,k)=>o==null?o:o[k],D);
+function sp(p,v){const k=p.split('.');let o=D;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v}
+
+/* ---------- images ---------- */
+function fileToImg(f,max=1600){return new Promise(res=>{if(!f)return res(null);const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height)),w=Math.round(im.width*s),h=Math.round(im.height*s),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);res({id:'i_'+uid(),d:c.toDataURL('image/jpeg',.85),s:false})};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(f)})}
+
+/* ---------- publish object ---------- */
+function pub(embed){
+ const pth=i=>i?(embed?i.d:'images/'+i.id+'.jpg'):'';
+ return{...D,demo:undefined,profile:{...D.profile,heroImg:pth(D.profile.heroImg),aboutImg:pth(D.profile.aboutImg)},works:D.works.map(w=>({...w,demo:undefined,imgs:w.imgs.map(pth)}))}}
+
+/* ---------- save / sync / preview ---------- */
+let tt,pt;
+function touch(){D.updatedAt=Date.now();clearTimeout(tt);tt=setTimeout(()=>{DB.set('data',D);queueSync();pushPrev()},350)}
+function commit(msg){D.updatedAt=Date.now();DB.set('data',D);adm();queueSync();pushPrev();if(msg)toast(msg)}
+function pushPrev(){if(!document.body.classList.contains('pv'))return;clearTimeout(pt);pt=setTimeout(()=>{const f=$('#pf');if(f&&f.contentWindow)f.contentWindow.postMessage({pf:pub(true)},'*')},200)}
+$('#pf').addEventListener('load',()=>pushPrev());
+$('#pvt').onclick=()=>{const on=document.body.classList.toggle('pv');if(on){const f=$('#pf');if(!f.getAttribute('src'))f.src='index.html';else pushPrev()}};
+$('#prev').addEventListener('click',e=>{const b=e.target.closest('[data-dv]');if(b)$('#pvf').classList.toggle('m',b.dataset.dv==='m')});
+let st2;function queueSync(){if(!dirH||!perm)return;clearTimeout(st2);st2=setTimeout(syncNow,800);$('#st').innerHTML='<span class="dot on"></span> جاري المزامنة...'}
+async function syncNow(){
+ if(!dirH||!perm)return;
+ try{
+  const imgDir=await dirH.getDirectoryHandle('images',{create:true}),imgs=allImgs();
+  for(const im of imgs)if(!im.s){const fh=await imgDir.getFileHandle(im.id+'.jpg',{create:true}),w=await fh.createWritable();await w.write(await (await fetch(im.d)).blob());await w.close();im.s=true}
+  const keep=new Set(imgs.map(i=>i.id+'.jpg')),names=[];for await(const [n] of imgDir.entries())names.push(n);
+  for(const n of names)if(/^i_[a-z0-9]+\.jpg$/.test(n)&&!keep.has(n))await imgDir.removeEntry(n);
+  const fh=await dirH.getFileHandle('data.js',{create:true}),w=await fh.createWritable();
+  await w.write('window.PORTFOLIO_DATA='+JSON.stringify(pub(false))+';');await w.close();
+  DB.set('data',D);lastSync='اتزامن '+new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+ }catch(e){console.error(e);toast('حصلت مشكلة في المزامنة');if(e.name==='NotAllowedError')perm=false}
+ status()}
+function status(){
+ const s=$('#st'),b=$('#conn');
+ if(!window.showDirectoryPicker){s.innerHTML='<span class="dot off"></span> الربط المباشر محتاج Chrome أو Edge. تقدر تستخدم التصدير اليدوي من "نسخ احتياطي".';b.style.display='none';return}
+ if(dirH&&perm){s.innerHTML=`<span class="dot on"></span> متصل بالفولدر <b>${esc(dirH.name)}</b> — ${lastSync||'جاهز'}`;b.textContent='غيّر الفولدر'}
+ else if(dirH){s.innerHTML='<span class="dot off"></span> الفولدر محتاج إذن تاني';b.textContent='رجّع الاتصال'}
+ else{s.innerHTML='<span class="dot off"></span> مش متصل بفولدر الموقع. التعديلات محفوظة هنا بس.';b.textContent='ربط فولدر الموقع'}}
+$('#conn').onclick=async()=>{
+ if(dirH&&!perm){try{perm=(await dirH.requestPermission({mode:'readwrite'}))==='granted'}catch(e){}if(perm)await syncNow();status();return}
+ try{dirH=await showDirectoryPicker({mode:'readwrite'});perm=true;await DB.set('dir',dirH);allImgs().forEach(i=>i.s=false);await syncNow();toast('اتربط ✓');adm()}catch(e){if(e.name!=='AbortError')toast('معرفتش أربط. جرّب فولدر تاني')}
+ status()};
+
+/* ---------- tabs ---------- */
+const TABS=[['home','نظرة عامة'],['works','الأعمال'],['cats','الأقسام'],['content','المحتوى والصور'],['services','الخدمات وطريقة الشغل'],['pricing','الباقات والأسعار'],['proof','آراء العملاء والأسئلة'],['design','التصميم والثيم'],['layout','ترتيب الصفحة'],['settings','التواصل والإعدادات'],['backup','نسخ احتياطي']];
+$('#nv').innerHTML=TABS.map(([k,n])=>`<button data-t="${k}">${n}</button>`).join('');
+$('#nv').onclick=e=>{const b=e.target.closest('[data-t]');if(b){TAB=b.dataset.t;adm()}};
+function adm(){$$('#nv [data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===TAB));({home:aHome,works:aWorks,cats:aCats,content:aContent,services:aServices,pricing:aPricing,proof:aProof,design:aDesign,layout:aLayout,settings:aSettings,backup:aBackup})[TAB]($('#main'))}
+
+/* ---------- field helpers ---------- */
+function fld(label,path,o={}){
+ const v=gp(path),h=o.h?`<small>${o.h}</small>`:'';
+ if(o.type==='check')return`<label class="ck"><input type="checkbox" data-p="${path}" ${v?'checked':''}> ${label}</label>`;
+ if(o.type==='select')return`<label class="f">${label}${h}<select data-p="${path}">${o.opts.map(([k,n])=>`<option value="${k}" ${k===v?'selected':''}>${n}</option>`).join('')}</select></label>`;
+ if(o.type==='color')return`<div class="f">${label}${h}<div class="cr2"><input type="color" data-p="${path}" value="${/^#[0-9a-f]{6}$/i.test(v)?v:'#2f5bff'}"><button class="b s" data-a="clr" data-p="${path}">رجوع للون الثيم</button></div></div>`;
+ if(o.type==='lines')return`<label class="f">${label}${h}<textarea data-p="${path}" data-t="lines" rows="${o.rows||4}">${esc((v||[]).join('\n'))}</textarea></label>`;
+ if(o.type==='ta')return`<label class="f">${label}${h}<textarea data-p="${path}" rows="${o.rows||4}">${esc(v)}</textarea></label>`;
+ if(o.type==='num')return`<label class="f">${label}${h}<input type="number" data-p="${path}" data-t="num" value="${esc(v)}"></label>`;
+ return`<label class="f">${label}${h}<input type="text" data-p="${path}" value="${esc(v)}" ${o.ph?`placeholder="${esc(o.ph)}"`:''}></label>`}
+const seg=(label,path,opts,h)=>`<div class="f">${label}${h?`<small class="mu" style="display:block;font-weight:400">${h}</small>`:''}<div class="seg">${opts.map(([k,n])=>`<button class="${gp(path)===k?'on':''}" data-a="set" data-p="${path}" data-v="${k}">${n}</button>`).join('')}</div></div>`;
+const NEW={services:{t:'',d:''},process:{t:'',d:''},packages:{name:'',price:'',desc:'',features:[],pop:false},testimonials:{name:'',role:'',text:''},faq:{q:'',a:''},socials:{l:'',u:''},'profile.skills':{n:'',v:80},'profile.stats':{n:'',l:''}};
+function listEd(title,path,fields,sub){
+ const arr=gp(path);
+ return`<div class="card"><h3>${title}</h3>${sub?`<div class="sub">${sub}</div>`:''}${arr.map((it,i)=>`<div class="li"><div class="lih"><b>#${i+1}</b><span><button class="b s" data-a="mv" data-p="${path}" data-i="${i}" data-d="-1">↑</button> <button class="b s" data-a="mv" data-p="${path}" data-i="${i}" data-d="1">↓</button> <button class="b s r" data-a="rm" data-p="${path}" data-i="${i}">حذف</button></span></div><div class="${fields.length>2?'':'two'}">${fields.map(f=>fld(f.l,path+'.'+i+'.'+f.k,f)).join('')}</div></div>`).join('')}<button class="b" data-a="add" data-p="${path}">+ إضافة</button></div>`}
+
+/* ---------- pages ---------- */
+function aHome(el){
+ const P=D.profile,S=D.settings,real=D.works.filter(w=>!w.demo).length;
+ const ck=[['ارفع 6 أعمال حقيقية على الأقل',real>=6],['حط صورتك (قسم المحتوى والصور)',!!(P.heroImg||P.aboutImg)],['اكتب نبذة عنك بدل النص الافتراضي',P.about.length>60&&!P.about.includes('اكتب هنا')],['حط رقم واتساب أو إيميلك الحقيقي (التواصل والإعدادات)',!!(S.whatsapp||(S.email&&S.email!=='your@email.com'))],['اختار الثيم واللون المناسب (التصميم والثيم)',S.theme!=='clean'||!!S.accent],['اربط فولدر الموقع عشان يتحدّث لوحده',!!(dirH&&perm)]];
+ const done=ck.filter(c=>c[1]).length;
+ el.innerHTML=`<div class="bar"><h2>أهلًا يا ${esc(P.name.split(' ')[0])}</h2></div>
+ <div class="stats"><div class="stat"><b>${D.works.length}</b><span>عمل</span></div><div class="stat"><b>${D.cats.length}</b><span>قسم</span></div><div class="stat"><b>${allImgs().length}</b><span>صورة</span></div><div class="stat"><b>${S.sections.filter(s=>s.on).length}</b><span>قسم ظاهر في الموقع</span></div></div>
+ <div class="card"><h3>جاهزية الموقع: ${done} من ${ck.length}</h3><div class="prog"><i style="width:${done/ck.length*100}%"></i></div>${ck.map(c=>`<div class="chk ${c[1]?'ok':''}">${c[0]}</div>`).join('')}</div>
+ <div class="card"><h3>إزاي تشتغل؟</h3><p class="mu">عدّل أي حاجة من القايمة، وشغّل "معاينة مباشرة" من فوق عشان تشوف الموقع بيتغير قدامك. لما تربط الفولدر، كل تعديل بيتكتب في <b>data.js</b> وفولدر <b>images</b> لوحده. وبعدها ارفع الفولدر كله على Netlify أو GitHub Pages.</p></div>`;
+}
+function aWorks(el){
+ el.innerHTML=`<div class="bar"><h2>الأعمال <small>(${D.works.length})</small></h2><button class="b p" data-a="new">+ عمل جديد</button></div>
+ ${D.works.some(w=>w.demo)?`<div class="note">فيه أعمال تجريبية في الموقع. <button class="b s" data-a="cleardemo">امسح التجريبي</button></div>`:''}
+ <label class="quick" id="qk"><input type="file" id="qf" accept="image/*" multiple hidden>رفع سريع: اسحب صور هنا (أو دوس). كل صورة هتبقى عمل، وتعدّل اسمه بعدين</label>
+ <div class="tools"><input type="text" id="ws" placeholder="بحث باسم العمل..."><select id="wcf"><option value="">كل الأقسام</option>${D.cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div><div class="wl" id="wl"></div>`;
+ drawWL();
+ const qk=$('#qk'),qf=$('#qf');qf.onchange=()=>quick(qf.files);
+ ['dragenter','dragover'].forEach(v=>qk.addEventListener(v,e=>{e.preventDefault();qk.classList.add('over')}));
+ ['dragleave','drop'].forEach(v=>qk.addEventListener(v,e=>{e.preventDefault();qk.classList.remove('over')}));
+ qk.addEventListener('drop',e=>quick(e.dataTransfer.files));
+ $('#ws').oninput=drawWL;$('#wcf').onchange=drawWL;
+}
+function drawWL(){
+ const q=$('#ws').value.trim().toLowerCase(),c=$('#wcf').value;
+ $('#wl').innerHTML=D.works.filter(w=>(!c||w.cat===c)&&(!q||w.title.toLowerCase().includes(q))).map(w=>`<div class="wc ${w.hidden?'off':''}"><img src="${w.imgs[0]?w.imgs[0].d:''}" alt=""><div class="wi"><b>${w.featured?'★ ':''}${esc(w.title)}</b><small>${esc(catName(w.cat))} · ${esc(w.year)} · ${w.imgs.length} صورة${w.hidden?' · مخفي':''}</small>
+ <div class="row"><button class="b s" data-a="edit" data-id="${w.id}">تعديل</button><button class="b s" data-a="wup" data-id="${w.id}">↑</button><button class="b s" data-a="wdn" data-id="${w.id}">↓</button><button class="b s" data-a="feat" data-id="${w.id}">${w.featured?'إلغاء ★':'★ مميز'}</button><button class="b s" data-a="hide" data-id="${w.id}">${w.hidden?'إظهار':'إخفاء'}</button><button class="b s r" data-a="del" data-id="${w.id}">حذف</button></div></div></div>`).join('')||'<p class="mu">مفيش أعمال هنا.</p>'}
+async function quick(fl){toast('جاري تجهيز الصور...');let n=0;for(const f of [...fl]){const im=await fileToImg(f);if(im){D.works.unshift({id:uid(),title:f.name.replace(/\.[^.]+$/,''),cat:(D.cats[0]||{}).id||'',year:String(new Date().getFullYear()),client:'',desc:'',tags:[],link:'',featured:false,ba:false,hidden:false,imgs:[im]});n++}}commit(n+' عمل اتضاف. عدّل أسمائهم')}
+function aCats(el){
+ el.innerHTML=`<div class="bar"><h2>الأقسام</h2></div><div class="card"><h3>أقسام الشغل</h3><div class="sub">بتظهر كفلاتر في الموقع</div>
+ ${D.cats.map((c,i)=>`<div class="rw" style="grid-template-columns:1fr auto;margin-bottom:10px"><input type="text" data-p="cats.${i}.name" value="${esc(c.name)}"><button class="b s r" data-a="cdel" data-id="${c.id}">حذف</button></div>`).join('')}
+ <div class="rw" style="grid-template-columns:1fr auto;margin-top:18px"><input type="text" id="newcat" placeholder="قسم جديد (مثلاً: موشن جرافيك)"><button class="b p" data-a="cadd">إضافة</button></div></div>`}
+function aContent(el){
+ const P=D.profile;
+ el.innerHTML=`<div class="bar"><h2>المحتوى والصور</h2></div>
+ <div class="card"><h3>الصفحة الأولى</h3><div class="two">${fld('الاسم','profile.name')}${fld('المسمى الوظيفي','profile.title')}</div>${fld('جملة تعريفية','profile.tagline',{type:'ta',rows:2})}${fld('المكان','profile.location')}</div>
+ <div class="card"><h3>الصور</h3><div class="two"><div class="imgsel"><img src="${P.heroImg?P.heroImg.d:''}" alt=""><label class="f">صورة الصفحة الأولى<small>لو سبتها فاضية هتظهر أول عمل</small><input type="file" accept="image/*" data-pimg="heroImg"></label></div>
+ <div class="imgsel"><img src="${P.aboutImg?P.aboutImg.d:''}" alt=""><label class="f">صورتك (قسم عني)<input type="file" accept="image/*" data-pimg="aboutImg"></label></div></div></div>
+ <div class="card"><h3>قسم عني</h3>${fld('نبذة عنك','profile.about',{type:'ta',rows:6})}</div>
+ ${listEd('المهارات','profile.skills',[{l:'المهارة',k:'n'},{l:'المستوى (0-100)',k:'v',type:'num'}])}
+ ${listEd('الأرقام','profile.stats',[{l:'الرقم',k:'n',ph:'50+'},{l:'الوصف',k:'l'}])}`}
+function aServices(el){el.innerHTML=`<div class="bar"><h2>الخدمات وطريقة الشغل</h2></div>${listEd('الخدمات','services',[{l:'اسم الخدمة',k:'t'},{l:'الوصف',k:'d'}])}${listEd('خطوات الشغل','process',[{l:'الخطوة',k:'t'},{l:'الوصف',k:'d'}])}`}
+function aPricing(el){el.innerHTML=`<div class="bar"><h2>الباقات والأسعار</h2></div>${listEd('الباقات','packages',[{l:'اسم الباقة',k:'name'},{l:'السعر',k:'price'},{l:'وصف قصير',k:'desc'},{l:'المميزات',k:'features',type:'lines',h:'كل ميزة في سطر'},{l:'الأكثر طلبًا',k:'pop',type:'check'}],'العميل لما يدوس "اختار الباقة" بتتكتب رسالة جاهزة بالباقة في فورم التواصل.')}`}
+function aProof(el){el.innerHTML=`<div class="bar"><h2>آراء العملاء والأسئلة</h2></div>${listEd('آراء العملاء','testimonials',[{l:'الاسم',k:'name'},{l:'الصفة',k:'role'},{l:'الرأي',k:'text',type:'ta',rows:3}])}${listEd('الأسئلة الشائعة','faq',[{l:'السؤال',k:'q'},{l:'الإجابة',k:'a',type:'ta',rows:2}])}<div class="card"><h3>عملاء اشتغلت معاهم</h3>${fld('الأسماء','clients',{type:'lines',h:'كل اسم في سطر'})}</div>`}
+function aDesign(el){
+ el.innerHTML=`<div class="bar"><h2>التصميم والثيم</h2></div>
+ <div class="card"><h3>الثيم</h3><div class="themes">${Object.entries(THEMES).map(([k,[n,a,b]])=>`<button class="${D.settings.theme===k?'on':''}" style="--c:${a};--b:${b}" data-a="set" data-p="settings.theme" data-v="${k}"><i></i>${n}</button>`).join('')}</div></div>
+ <div class="card"><h3>الألوان والمظهر</h3>${seg('الوضع','settings.mode',[['light','فاتح'],['dark','غامق'],['auto','تلقائي']])}${fld('لون مخصص (اختياري)','settings.accent',{type:'color'})}${seg('الزوايا','settings.radius',[['sharp','حادة'],['soft','ناعمة'],['round','دايرية']])}
+ ${fld('خط الموقع','settings.font',{type:'select',opts:[['plex','IBM Plex Sans Arabic'],['cairo','Cairo'],['tajawal','Tajawal'],['almarai','Almarai'],['readex','Readex Pro']]})}</div>
+ <div class="card"><h3>شكل الصفحة</h3>${seg('تصميم الصفحة الأولى','settings.hero',[['split','نص + صورة'],['center','في النص'],['minimal','بسيط']])}${seg('طريقة عرض الأعمال','settings.layout',[['masonry','متدرّج'],['grid','شبكة منتظمة'],['list','قايمة'],['featured','مميّز (الأول كبير)']])}</div>
+ <div class="card"><h3>إضافات</h3>${fld('حركة الظهور أثناء السكرول','settings.anim',{type:'check'})}${fld('إظهار زرار الوضع الفاتح/الغامق للزائر','settings.toggle',{type:'check'})}</div>`}
+function aLayout(el){
+ el.innerHTML=`<div class="bar"><h2>ترتيب الصفحة</h2></div><div class="card"><h3>الأقسام</h3><div class="sub">شغّل أو اقفل أي قسم، ورتّبه، وغيّر عنوانه لو عايز</div>
+ ${D.settings.sections.map((s,i)=>`<div class="li rw"><label class="ck"><input type="checkbox" data-p="settings.sections.${i}.on" ${s.on?'checked':''}> ${SN[s.id]}</label><input type="text" data-p="settings.sections.${i}.title" value="${esc(s.title)}" placeholder="عنوان مخصص (اختياري)"><span><button class="b s" data-a="mv" data-p="settings.sections" data-i="${i}" data-d="-1">↑</button> <button class="b s" data-a="mv" data-p="settings.sections" data-i="${i}" data-d="1">↓</button></span></div>`).join('')}</div>`}
+function aSettings(el){
+ el.innerHTML=`<div class="bar"><h2>التواصل والإعدادات</h2></div>
+ <div class="card"><h3>التواصل</h3><div class="two">${fld('الإيميل','settings.email')}${fld('رقم واتساب','settings.whatsapp',{ph:'201012345678',h:'بالكود الدولي من غير +'})}</div>${fld('إظهار زرار واتساب العايم','settings.waFloat',{type:'check'})}${fld('رابط السيرة الذاتية (CV)','settings.cv',{h:'رابط ملف PDF أو Google Drive. سيبه فاضي لو مش عايزه'})}</div>
+ <div class="card"><h3>الحالة والأزرار</h3>${fld('إظهار شارة "متاح للشغل"','settings.available',{type:'check'})}${fld('نص الشارة (اختياري)','settings.availText')}${fld('نص زرار الدعوة (اختياري)','settings.cta',{ph:'ابدأ مشروعك'})}</div>
+ ${listEd('السوشيال','socials',[{l:'الاسم',k:'l'},{l:'الرابط',k:'u',ph:'https://'}])}
+ <div class="card"><h3>اللغة</h3>${seg('لغة الموقع','settings.lang',[['ar','العربية'],['en','English'],['tr','Türkçe']],'بتغيّر اتجاه الصفحة وعناوين الأقسام والأزرار. النصوص اللي كاتبها إنت بتفضل زي ما هي.')}</div>
+ <div class="card"><h3>SEO (ظهور الموقع في جوجل)</h3>${fld('عنوان الصفحة','settings.seoTitle')}${fld('وصف الصفحة','settings.seoDesc',{type:'ta',rows:2})}</div>`}
+function aBackup(el){
+ const mb=(JSON.stringify(D).length/1048576).toFixed(1);
+ el.innerHTML=`<div class="bar"><h2>نسخ احتياطي</h2></div>
+ <div class="card"><h3>نسخة احتياطية</h3><p class="mu" style="margin-bottom:12px">نزّلها كل فترة. لو مسحت بيانات المتصفح ترجّع شغلك منها.</p><button class="b p" data-a="exjson">⬇ نزّل نسخة (${mb} MB)</button></div>
+ <div class="card"><h3>استرجاع</h3><input type="file" id="imp" accept=".json"></div>
+ <div class="card"><h3>تصدير يدوي</h3><p class="mu" style="margin-bottom:12px">لو الربط بالفولدر مش شغال عندك: بينزّل data.js فيه الصور جواه، حطه جنب index.html.</p><button class="b" data-a="exjs">⬇ تنزيل data.js</button></div>
+ <div class="card"><h3>مسح الكل</h3><button class="b r" data-a="reset">مسح كل حاجة وبدء من الأول</button></div>`}
+function dl(n,txt,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+
+/* ---------- events ---------- */
+$('#main').addEventListener('input',e=>{const t=e.target,p=t.dataset.p;if(!p||t.type==='checkbox')return;let v=t.value;if(t.dataset.t==='lines')v=v.split('\n').map(x=>x.trim()).filter(Boolean);else if(t.dataset.t==='num')v=+v;sp(p,v);touch()});
+$('#main').addEventListener('change',async e=>{
+ const t=e.target;
+ if(t.type==='checkbox'&&t.dataset.p){sp(t.dataset.p,t.checked);touch();if(t.dataset.p.startsWith('settings.sections'))return}
+ if(t.tagName==='SELECT'&&t.dataset.p){sp(t.dataset.p,t.value);touch()}
+ if(t.id==='imp'){const f=t.files[0];if(!f)return;try{const j=JSON.parse(await f.text());if(!j.works||!j.profile)throw 0;D=fix(j);allImgs().forEach(i=>i.s=false);commit('اتعمل استرجاع ✓')}catch(x){toast('الملف مش مظبوط')}}
+ if(t.dataset.pimg){const im=await fileToImg(t.files[0],1600);if(im){D.profile[t.dataset.pimg]=im;commit('اتغيرت الصورة')}}
+});
+$('#main').addEventListener('click',e=>{
+ const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,id=b.dataset.id,p=b.dataset.p,i=D.works.findIndex(w=>w.id===id);
+ if(a==='new')editWork();else if(a==='edit')editWork(id);
+ else if(a==='wup'&&i>0){[D.works[i-1],D.works[i]]=[D.works[i],D.works[i-1]];commit()}
+ else if(a==='wdn'&&i<D.works.length-1){[D.works[i+1],D.works[i]]=[D.works[i],D.works[i+1]];commit()}
+ else if(a==='feat'){D.works[i].featured=!D.works[i].featured;commit()}
+ else if(a==='hide'){D.works[i].hidden=!D.works[i].hidden;commit()}
+ else if(a==='del'){if(confirm('تمسح العمل ده نهائي؟')){D.works.splice(i,1);commit('اتمسح')}}
+ else if(a==='cleardemo'){D.works=D.works.filter(w=>!w.demo);commit('اتمسحت الأعمال التجريبية')}
+ else if(a==='cdel'){if(D.works.some(w=>w.cat===id))return toast('القسم ده فيه أعمال. انقلها الأول');D.cats=D.cats.filter(c=>c.id!==id);commit('اتمسح')}
+ else if(a==='cadd'){const v=$('#newcat').value.trim();if(!v)return;D.cats.push({id:'c'+uid(),name:v});commit('اتضاف')}
+ else if(a==='set'){sp(p,b.dataset.v);if(p==='settings.theme')D.settings.accent='';commit()}
+ else if(a==='clr'){sp(p,'');commit()}
+ else if(a==='add'){const arr=gp(p);arr.push(JSON.parse(JSON.stringify(NEW[p])));commit()}
+ else if(a==='rm'){gp(p).splice(+b.dataset.i,1);commit()}
+ else if(a==='mv'){const arr=gp(p),k=+b.dataset.i,n=k+ +b.dataset.d;if(n>=0&&n<arr.length){[arr[k],arr[n]]=[arr[n],arr[k]];commit()}}
+ else if(a==='exjs')dl('data.js','window.PORTFOLIO_DATA='+JSON.stringify(pub(true))+';','text/javascript');
+ else if(a==='exjson')dl('portfolio-backup.json',JSON.stringify(D),'application/json');
+ else if(a==='reset'){if(confirm('هيمسح كل حاجة. متأكد؟')){D=fix({});D.works=[];allImgs().forEach(i=>i.s=false);commit('اتمسح كل حاجة')}}
+});
+
+/* ---------- work editor ---------- */
+function closeEd(){const e=$('#ed');if(e)e.remove();T=null}
+function editWork(id){
+ const ex=D.works.find(w=>w.id===id);
+ T=ex?JSON.parse(JSON.stringify(ex)):{id:uid(),title:'',cat:(D.cats[0]||{}).id||'',year:String(new Date().getFullYear()),client:'',desc:'',tags:[],link:'',featured:false,ba:false,hidden:false,imgs:[]};
+ const d=document.createElement('div');d.id='ed';
+ d.innerHTML=`<div class="box"><div class="bar"><h2>${ex?'تعديل عمل':'عمل جديد'}</h2><button class="b" id="edx">✕ إلغاء</button></div>
+ <label class="f">اسم العمل<input type="text" id="e_t" value="${esc(T.title)}"></label>
+ <div class="two"><label class="f">القسم<select id="e_c">${D.cats.map(c=>`<option value="${c.id}" ${c.id===T.cat?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label><label class="f">السنة<input type="text" id="e_y" value="${esc(T.year)}"></label></div>
+ <div class="two"><label class="f">العميل (اختياري)<input type="text" id="e_cl" value="${esc(T.client)}"></label><label class="f">لينك المشروع (اختياري)<input type="text" id="e_l" value="${esc(T.link)}" placeholder="https://"></label></div>
+ <label class="f">تاجات<small>افصل بينهم بفاصلة: Logo, Branding</small><input type="text" id="e_tg" value="${esc((T.tags||[]).join(', '))}"></label>
+ <label class="f">وصف العمل (اختياري)<textarea id="e_d">${esc(T.desc)}</textarea></label>
+ <label class="ck"><input type="checkbox" id="e_f" ${T.featured?'checked':''}> عمل مميّز ★</label>
+ <label class="ck"><input type="checkbox" id="e_b" ${T.ba?'checked':''}> أول صورة = "قبل" وتاني صورة = "بعد" (سلايدر مقارنة)</label>
+ <div class="dz" id="dz"><b>اسحب الصور هنا</b> أو دوس لاختيارها<br><small>أول صورة هي الغلاف</small><input type="file" id="e_fi" accept="image/*" multiple hidden></div>
+ <div class="th" id="th"></div><div class="row" style="margin-top:20px"><button class="b p" id="e_s">حفظ العمل</button></div></div>`;
+ document.body.append(d);drawTh();$('#edx').onclick=closeEd;
+ const dz=$('#dz'),fi=$('#e_fi');dz.onclick=()=>fi.click();fi.onchange=()=>addFiles(fi.files);
+ ['dragenter','dragover'].forEach(v=>dz.addEventListener(v,e=>{e.preventDefault();dz.classList.add('over')}));
+ ['dragleave','drop'].forEach(v=>dz.addEventListener(v,e=>{e.preventDefault();dz.classList.remove('over')}));
+ dz.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+ $('#th').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;const i=+b.dataset.i,k=b.dataset.k,m=T.imgs;
+  if(k==='x')m.splice(i,1);else if(k==='c'&&i>0)m.unshift(m.splice(i,1)[0]);else if(k==='l'&&i>0)[m[i-1],m[i]]=[m[i],m[i-1]];else if(k==='r'&&i<m.length-1)[m[i+1],m[i]]=[m[i],m[i+1]];drawTh()};
+ $('#e_s').onclick=()=>{
+  T.title=$('#e_t').value.trim();T.cat=$('#e_c').value;T.year=$('#e_y').value.trim();T.client=$('#e_cl').value.trim();T.link=$('#e_l').value.trim();
+  T.tags=$('#e_tg').value.split(',').map(x=>x.trim()).filter(Boolean);T.desc=$('#e_d').value.trim();T.featured=$('#e_f').checked;T.ba=$('#e_b').checked;
+  if(!T.title)return toast('اكتب اسم العمل');if(!T.imgs.length)return toast('ضيف صورة واحدة على الأقل');if(T.ba&&T.imgs.length<2)return toast('سلايدر قبل/بعد محتاج صورتين على الأقل');
+  delete T.demo;const i=D.works.findIndex(w=>w.id===T.id);if(i>=0)D.works[i]=T;else D.works.unshift(T);
+  closeEd();commit('اتحفظ العمل ✓')};
+}
+async function addFiles(fl){toast('جاري تجهيز الصور...');for(const f of [...fl]){const im=await fileToImg(f);if(im)T.imgs.push(im)}drawTh();toast('تمام')}
+function drawTh(){$('#th').innerHTML=T.imgs.map((s,i)=>`<div><img src="${s.d}" alt="">${i===0?'<span class="cv">غلاف</span>':''}<div class="tb"><button data-i="${i}" data-k="c">غلاف</button><button data-i="${i}" data-k="r">◂</button><button data-i="${i}" data-k="l">▸</button><button data-i="${i}" data-k="x">✕</button></div></div>`).join('')}
+addEventListener('keydown',e=>{if(e.key==='Escape')closeEd()});
+
+/* ---------- start ---------- */
+(async function(){
+ const saved=await DB.get('data');D=saved?fix(saved):defD();
+ dirH=await DB.get('dir');
+ if(dirH){try{perm=(await dirH.queryPermission({mode:'readwrite'}))==='granted'}catch(e){perm=false}}
+ status();adm();if(perm)syncNow();
+})();
+</script>
+</body>
+</html>
